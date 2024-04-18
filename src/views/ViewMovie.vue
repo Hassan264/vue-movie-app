@@ -1,15 +1,25 @@
 <template>
     <div>
         <h1>View Movie</h1>
-        <movie-details :movie="movie" />
-        <actor-list :actors="movie.actors" />
+        <div v-if="movie">
+            <h2>{{ movie.title }}</h2>
+            <p><strong>Description:</strong> {{ movie.description }}</p>
+            <p><strong>Year:</strong> {{ movie.year }}</p>
+            <h3>Actors</h3>
+            <ul>
+                <li v-for="(actor, index) in movie.actors" :key="index">
+                    {{ actor.name }} ({{ actor.role }})
+                </li>
+            </ul>
+            <router-link :to="'/edit/' + $route.params.id">Edit</router-link>
+        </div>
+        <div v-else>
+            <p>No movie found.</p>
+        </div>
     </div>
 </template>
 
 <script>
-import MovieDetails from '../components/MovieDetails.vue'
-import ActorList from '../components/ActorList.vue'
-
 export default {
     name: 'ViewMovie',
     computed: {
@@ -18,9 +28,8 @@ export default {
             return this.$store.state.movies[this.$route.params.id]
         },
     },
-    components: {
-        MovieDetails,
-        ActorList,
+    created() {
+        this.$store.dispatch('getMovies')
     },
 }
 </script>

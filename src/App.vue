@@ -31,4 +31,7 @@ nav a.router-link-exact-active {
 button {
     margin-bottom: 10px;
 }
+td a {
+    margin-right: 5px;
+}
 </style>

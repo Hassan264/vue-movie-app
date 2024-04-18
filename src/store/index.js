@@ -6,10 +6,12 @@ const store = createStore({
     },
     mutations: {
         addMovie(state, movie) {
+            console.log('addMovie store', { movie })
             state.movies.push(movie)
             localStorage.setItem('movies', JSON.stringify(state.movies)) // Save to localStorage
         },
         updateMovie(state, { index, movie }) {
+            console.log('updateMovie store', { movie, index })
             state.movies[index] = movie
             localStorage.setItem('movies', JSON.stringify(state.movies)) // Save to localStorage
         },

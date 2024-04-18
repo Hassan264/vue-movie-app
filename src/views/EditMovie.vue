@@ -1,73 +1,61 @@
 <template>
     <div>
         <h1>Edit Movie</h1>
-        <movie-form :formData="form" @submit="updateMovie" />
-        <actor-list
-            :actors="form.actors"
-            @add="addActor"
-            @remove="removeActor"
-        />
+        <MovieForm :formData="formData" @submit="handleSubmit" />
     </div>
 </template>
 
 <script>
 import MovieForm from '../components/MovieForm.vue'
-import ActorList from '../components/ActorList.vue'
 
 export default {
     name: 'EditMovie',
+    components: {
+        MovieForm,
+    },
     data() {
         return {
-            form: {
+            formData: {
                 title: '',
                 description: '',
                 year: null,
-                actors: [{ name: '', age: null, joinDate: '', role: '' }],
+                actors: [],
             },
         }
     },
-    methods: {
-        addActor() {
-            this.form.actors.push({
-                name: '',
-                age: null,
-                joinDate: '',
-                role: '',
-            })
-        },
-        removeActor(index) {
-            this.form.actors.splice(index, 1)
-        },
-        updateMovie(formData) {
-            // Dispatch action to update movie in store
-            this.$store.dispatch('updateMovie', {
-                index: this.$route.params.id,
-                movie: formData,
-            })
-            // Redirect to ViewMovie component after updating
-            this.$router.push({
-                name: 'ViewMovie',
-                params: { id: this.$route.params.id },
-            })
-        },
-        loadMovie() {
-            // Load movie data from store and fill the form
-            const movie = this.$store.state.movies[this.$route.params.id]
-            if (movie) {
-                this.form = { ...movie }
-            }
+    computed: {
+        movie() {
+            // Retrieve movie data from Vuex store based on route parameter
+            return this.$store.state.movies[this.$route.params.id]
         },
     },
     created() {
-        // Load movie data when component is created
-        this.loadMovie()
+        this.$store.dispatch('getMovies')
+        // Set form data with existing movie details
+        console.log('mounted movie', this.movie)
+        if (this.movie) {
+            this.formData.title = this.movie.title
+            this.formData.description = this.movie.description
+            this.formData.year = this.movie.year
+            this.formData.actors = this.movie.actors // Assuming you have actors data in the movie object
+        }
+        console.log('mounted formData', this.formData)
     },
-    components: {
-        MovieForm,
-        ActorList,
+    methods: {
+        handleSubmit(updatedData) {
+            // Update movie data in Vuex store
+            this.$store.dispatch('updateMovie', {
+                index: this.$route.params.id,
+                movie: updatedData,
+            })
+            // Redirect to view page for the updated movie
+            this.$router.push({
+                to: 'ViewMovie',
+                params: { id: this.$route.params.id },
+            })
+        },
     },
 }
 </script>
 
 <style scoped></style>
-../components/ActorForm.vue

@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="actor-list-container">
         <h2>Actors</h2>
         <table>
             <thead>
@@ -12,46 +12,20 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="(actor, index) in actors" :key="index">
+                <tr v-for="(actor, index) in localFormData" :key="index">
+                    <td><input v-model="actor.name" type="text" required /></td>
                     <td>
                         <input
-                            v-model="actor.name"
-                            type="text"
-                            :name="'actors[' + index + '].name'"
-                            required
-                        />
-                        <!-- <span v-if="errors.has(`actors.${index}.name`)" class="error">{{
-                    errors.first(`actors.${index}.name`) }}
-                        </span> -->
-                    </td>
-                    <td>
-                        <input
-                            v-model="actor.age"
+                            v-model.number="actor.age"
                             type="number"
-                            :name="'actors[' + index + '].age'"
                             required
                         />
-                        <!-- <span v-if="errors.has(`actors.${index}.age`)" class="error">{{
-                    errors.first(`actors.${index}.age`) }}
-                        </span> -->
                     </td>
                     <td>
-                        <input
-                            v-model="actor.joinDate"
-                            type="date"
-                            :name="'actors[' + index + '].joinDate'"
-                            required
-                        />
-                        <!-- <span v-if="errors.has(`actors.${index}.joinDate`)" class="error">{{
-                    errors.first(`actors.${index}.joinDate`) }}
-                        </span> -->
+                        <input v-model="actor.joinDate" type="date" required />
                     </td>
                     <td>
-                        <select
-                            v-model="actor.role"
-                            :name="'actors[' + index + '].role'"
-                            required
-                        >
+                        <select v-model="actor.role" required>
                             <option value="">Select Role</option>
                             <option value="Background role">
                                 Background role
@@ -67,10 +41,10 @@
                                 Series regular
                             </option>
                         </select>
-                        <!-- <span v-if="errors.has(`actors.${index}.role`)" class="error">{{
-                    errors.first(`actors.${index}.role`) }}</span> -->
                     </td>
-                    <td><button @click="removeActor(index)">Remove</button></td>
+                    <td>
+                        <button @click="removeActor(index)">Remove</button>
+                    </td>
                 </tr>
             </tbody>
         </table>
@@ -79,38 +53,58 @@
 </template>
 
 <script>
-import { useForm, useFieldArray } from 'vee-validate'
-
 export default {
+    name: 'ActorList',
     props: {
         actors: {
             type: Array,
             required: true,
         },
     },
-    setup(props) {
-        const { handleSubmit, errors } = useForm()
-
-        const { fields, remove, push } = useFieldArray({
-            field: 'actors',
-            validateOnChange: false,
-        })
-
-        const addActor = () => {
-            push({ name: '', age: null, joinDate: '', role: '' })
+    data() {
+        return {
+            localFormData: this.actors,
         }
-
-        const removeActor = (index) => {
-            remove(index)
-        }
-
-        const submitForm = handleSubmit(() => {
-            props.$emit('submit', props.actors)
-        })
-
-        return { fields, addActor, removeActor, errors, submitForm }
+    },
+    methods: {
+        addActor() {
+            this.localFormData.push({
+                name: '',
+                age: null,
+                joinDate: '',
+                role: '',
+            })
+        },
+        removeActor(index) {
+            this.localFormData.splice(index, 1)
+        },
     },
 }
 </script>
 
-<style scoped></style>
+<style>
+.actor-list-container {
+    margin: 0 auto;
+    max-width: 600px;
+}
+
+.actor-list-container table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.actor-list-container th,
+.actor-list-container td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: left;
+}
+
+.actor-list-container th {
+    background-color: #f2f2f2;
+}
+
+.actor-list-container button {
+    margin-top: 10px;
+}
+</style>

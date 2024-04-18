@@ -8,25 +8,34 @@
             <input v-model="searchQuery" type="text" placeholder="Search..." />
             <button @click="resetSearch">Reset</button>
         </div>
-
-        <div v-for="(movie, index) in movie" :key="index">
-            <movie-details :movie="movie" />
-            <actor-list :actors="movie.actors" />
-        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Year</th>
+                    <th>Number of Actors</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="(movie, index) in filteredMovies" :key="index">
+                    <td>{{ movie.title }}</td>
+                    <td>{{ movie.year }}</td>
+                    <td>{{ movie.actors.length }}</td>
+                    <td>
+                        <router-link :to="'/movie/' + index">View</router-link>
+                        <router-link :to="'/edit/' + index">Edit</router-link>
+                        <button @click="deleteMovie(index)">Delete</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </template>
 
 <script>
-import MovieDetails from '../components/MovieDetails.vue'
-import ActorList from '../components/ActorList.vue'
-
 export default {
     name: 'MoviesList',
-    components: {
-        MovieDetails,
-        ActorList,
-    },
-    props: {},
     data() {
         return {
             searchQuery: '',
@@ -34,14 +43,23 @@ export default {
     },
     computed: {
         movies() {
-            console.log('states', { states: this.$store.state })
             return this.$store.state.movies
+        },
+        filteredMovies() {
+            return this.movies.filter((movie) =>
+                movie.title
+                    .toLowerCase()
+                    .includes(this.searchQuery.toLowerCase())
+            )
         },
     },
     methods: {
         resetSearch() {
             this.searchQuery = ''
             console.log('states', { states: this.movies })
+        },
+        deleteMovie(index) {
+            this.$store.dispatch('deleteMovie', index)
         },
     },
     created() {
@@ -50,4 +68,24 @@ export default {
 }
 </script>
 
-<style scoped></style>
+<style>
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th,
+td {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+th {
+    background-color: #f2f2f2;
+}
+
+input {
+    padding: 8px;
+    margin-bottom: 10px;
+}
+</style>
