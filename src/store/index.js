@@ -7,6 +7,7 @@ const store = createStore({
     mutations: {
         addMovie(state, movie) {
             state.movies.push(movie)
+            localStorage.setItem('movies', JSON.stringify(state.movies)) // Save to localStorage
         },
         updateMovie(state, { index, movie }) {
             state.movies[index] = movie
@@ -14,9 +15,12 @@ const store = createStore({
         deleteMovie(state, index) {
             state.movies.splice(index, 1)
         },
-        // getMovies(state) {
-        //     // get movie from local storage
-        // },
+        getMovies(state) {
+            const movies = JSON.parse(localStorage.getItem('movies'))
+            if (movies) {
+                state.movies = movies
+            }
+        },
     },
     actions: {
         addMovie({ commit }, movie) {
@@ -28,9 +32,9 @@ const store = createStore({
         deleteMovie({ commit }, index) {
             commit('deleteMovie', index)
         },
-        // getMovies({ commit }) {
-        //     commit('loadMovies')
-        // },
+        getMovies({ commit }) {
+            commit('loadMovies')
+        },
     },
 })
 
