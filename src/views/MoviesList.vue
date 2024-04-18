@@ -8,12 +8,24 @@
             <input v-model="searchQuery" type="text" placeholder="Search..." />
             <button @click="resetSearch">Reset</button>
         </div>
+
+        <div v-for="(movie, index) in movie" :key="index">
+            <movie-details :movie="movie" />
+            <actor-list :actors="movie.actors" />
+        </div>
     </div>
 </template>
 
 <script>
+import MovieDetails from '../components/MovieDetails.vue'
+import ActorList from '../components/ActorList.vue'
+
 export default {
     name: 'MoviesList',
+    components: {
+        MovieDetails,
+        ActorList,
+    },
     props: {},
     data() {
         return {
