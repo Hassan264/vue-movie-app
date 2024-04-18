@@ -11,9 +11,11 @@ const store = createStore({
         },
         updateMovie(state, { index, movie }) {
             state.movies[index] = movie
+            localStorage.setItem('movies', JSON.stringify(state.movies)) // Save to localStorage
         },
         deleteMovie(state, index) {
             state.movies.splice(index, 1)
+            localStorage.setItem('movies', JSON.stringify(state.movies)) // Save to localStorage
         },
         getMovies(state) {
             const movies = JSON.parse(localStorage.getItem('movies'))
@@ -33,7 +35,7 @@ const store = createStore({
             commit('deleteMovie', index)
         },
         getMovies({ commit }) {
-            commit('loadMovies')
+            commit('getMovies')
         },
     },
 })

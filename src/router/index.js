@@ -1,9 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import MoviesList from '../views/MoviesList.vue'
-import AddMovie from '../components/AddMovie.vue'
-import ViewMovie from '../components/ViewMovie.vue'
-import EditMovie from '../components/EditMovie.vue'
+import AddMovie from '../views/AddMovie.vue'
+import EditMovie from '../views/EditMovie.vue'
+import ViewMovie from '../views/ViewMovie.vue'
 
 const routes = [
     {
